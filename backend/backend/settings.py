@@ -37,9 +37,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
+    'rest_framework',  # Django REST Framework
+    'django_filters',  # Filtering support
     'core',
 ]
+
+# REST Framework Configuration
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],  # Enable Django filtering
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,  # Pagination limit
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
