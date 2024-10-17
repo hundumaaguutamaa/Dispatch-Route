@@ -22,6 +22,8 @@ class ContactPerson(models.Model):
 class ITRequest(models.Model):
     title = models.CharField(max_length=200)  # Request title
     description = models.TextField()  # Detailed description of the request
+    team = models.ForeignKey(ITTeam, on_delete=models.CASCADE, related_name='requests')  # Team responsible for the request
+
 
     def __str__(self):
         return self.title

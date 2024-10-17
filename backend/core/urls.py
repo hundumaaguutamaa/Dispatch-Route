@@ -10,5 +10,5 @@ router.register(r'requests', ITRequestViewSet, basename='itrequest')  # Routes f
 
 # Include the router's URL patterns into the project
 urlpatterns = [
-    path('api/', include(router.urls)),  # API root for all routes
+    path('', include(router.urls)),  # API root for all routes
 ]
