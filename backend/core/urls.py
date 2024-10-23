@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import ITTeamViewSet, ContactPersonViewSet, ITRequestViewSet
+from . import views
 
 # Define the router to automatically generate routes for viewsets
 router = DefaultRouter()
@@ -11,4 +12,5 @@ router.register(r'requests', ITRequestViewSet, basename='itrequest')  # Routes f
 # Include the router's URL patterns into the project
 urlpatterns = [
     path('', include(router.urls)),  # API root for all routes
+    path('search/', views.search, name='search'),
 ]
