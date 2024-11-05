@@ -5,42 +5,41 @@ from .serializers import ITTeamSerializer, ContactPersonSerializer, ITRequestSer
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import JsonResponse
 from django.db.models import Q
-from .models import ITTeam, ITRequest, ContactPerson
 
 # ViewSet for ITTeam
 class ITTeamViewSet(viewsets.ModelViewSet):
-    queryset = ITTeam.objects.all()  # Query all IT teams from the database
-    serializer_class = ITTeamSerializer  # Use the ITTeamSerializer for data transformation
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]  # Enable filtering and search functionality
-    filterset_fields = ['name']  # Allow filtering by team name
-    search_fields = ['name']  # Enable search by team name
+    queryset = ITTeam.objects.all().order_by('name')  # Ensure the queryset is ordered
+    serializer_class = ITTeamSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['name']
+    search_fields = ['name']
 
 # ViewSet for ContactPerson
 class ContactPersonViewSet(viewsets.ModelViewSet):
-    queryset = ContactPerson.objects.all()  # Query all contact persons
-    serializer_class = ContactPersonSerializer  # Use the ContactPersonSerializer for data transformation
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]  # Enable filtering and search functionality
-    filterset_fields = ['team__name']  # Allow filtering by team name (related field)
-    search_fields = ['name', 'email']  # Enable search by name or email
+    queryset = ContactPerson.objects.all().order_by('name')  # Ensure the queryset is ordered
+    serializer_class = ContactPersonSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['team__name']
+    search_fields = ['name', 'email']
 
 # ViewSet for ITRequest
 class ITRequestViewSet(viewsets.ModelViewSet):
-    queryset = ITRequest.objects.all()  # Query all IT requests
-    serializer_class = ITRequestSerializer  # Use the ITRequestSerializer for data transformation
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]  # Enable filtering and search functionality
-    filterset_fields = ['team__name']  # Allow filtering by team name and status
-    search_fields = ['title', 'description']  # Enable search by title or description of the request
+    queryset = ITRequest.objects.all().order_by('title')  # Ensure the queryset is ordered
+    serializer_class = ITRequestSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['team__name']
+    search_fields = ['title', 'description']
 
 def search(request):
     query = request.GET.get('q', '')
     if query:
         # Search for ITTeams by name
-        teams = ITTeam.objects.filter(name__icontains=query)
+        teams = ITTeam.objects.filter(name__icontains=query).order_by('name')
 
         # Search for ITRequests by title or description
         requests = ITRequest.objects.filter(
             Q(title__icontains=query) | Q(description__icontains=query)
-        )
+        ).order_by('title')
 
         # Search for ContactPersons by name, email, phone or office location
         contacts = ContactPerson.objects.filter(
@@ -48,7 +47,7 @@ def search(request):
             Q(email__icontains=query) | 
             Q(phone__icontains=query) | 
             Q(office_location__icontains=query)
-        )
+        ).order_by('name')
 
         # Return JSON response with the search results
         return JsonResponse({
